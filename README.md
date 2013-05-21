@@ -9,7 +9,7 @@ significantly more expressiveness than native DOM methods.
 ## Usage
 A full example is on [jsfiddle](http://jsfiddle.net/rRFgz/11/).
 
-<code>
+<pre><code>
 var captionDOM = new ThinDOM('div').attr('class', 'caption')
 	.append(new ThinDOM('div').attr('class', 'votes')
 			.append(new ThinDOM('a').attr({'class': 'up', 'href': '#'}))
@@ -18,4 +18,4 @@ var captionDOM = new ThinDOM('div').attr('class', 'caption')
 			.append(new ThinDOM('span').text(author + ' - '))
 			.append(new ThinDOM('span').text(points + ' point' + plural)))
 	.append(new ThinDOM('p').html(body)).get();
-</code>
+</code></pre>
