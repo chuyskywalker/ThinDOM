@@ -57,8 +57,8 @@
 </head>
 <body>
     <div>
-        <p>Trials: <input type="text" id="trials" value="2"/></p>
-        <p>Tests per trial: <input type="text" id="tests" value="2"/></p>
+        <p>Trials: <input type="text" id="trials" value="5"/></p>
+        <p>Tests per trial: <input type="text" id="tests" value="2000"/></p>
         <button id="run-tests">Run</button>
         <span class="warning">This WILL freeze your browser. Open your console to view results. </span>
     </div>
@@ -232,9 +232,8 @@
             return now - this.start;
         });
 
-        function PerfTest(tests, creator) {
+        function PerfTest(tests, creator, captionList) {
             var container = $("#captions").empty().get(0);
-            var captionList = GenerateCaptions(tests);
             var t = new Timer();
             for (var i in captionList) {
                 creator(captionList[i], container);
@@ -258,11 +257,12 @@
                 header += ("    " + testkey);
             }
             console.log(header);
+            var caplist = GenerateCaptions(tests);
             for(var j = 0; j < trials; j++) {
                 var row = (j+1);
                 for(var testkey in testers) {
                     var tester = testers[testkey];
-                    var time = PerfTest(tests, tester);
+                    var time = PerfTest(tests, tester, caplist);
                     row += '    ' + time;
                 }
                 console.log(row);
@@ -273,4 +273,3 @@
     </script>
 </body>
 </html>
-
