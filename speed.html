@@ -1,0 +1,276 @@
+<html>
+<head>
+    <script type='text/javascript' src='http://code.jquery.com/jquery-git2.js'></script>
+    <style type="text/css">
+        body {
+            font-family: "Helvetica";
+        }
+
+        .caption {
+            background-color: #DDD;
+            padding: 8px;
+            min-height: 40px;
+            border: 2px solid #888;
+            margin-bottom: 15px;
+        }
+        .caption .up {
+            background: url("http://s.imgur.com/images/site-sprite.png?1360350531") no-repeat scroll -23px -60px transparent;
+        }
+        .caption .down {
+            background: url("http://s.imgur.com/images/site-sprite.png?1360350531") no-repeat scroll -23px -80px transparent
+        }
+        .caption .up:hover {
+            background: url("http://s.imgur.com/images/site-sprite.png?1360350531") no-repeat scroll -2px -60px transparent;
+        }
+        .caption .down:hover {
+            background: url("http://s.imgur.com/images/site-sprite.png?1360350531") no-repeat scroll -2px -80px transparent
+        }
+        .caption .up:active {
+            background: url("http://s.imgur.com/images/site-sprite.png?1360350531") no-repeat scroll -44px -60px transparent;
+        }
+        .caption .down:active {
+            background: url("http://s.imgur.com/images/site-sprite.png?1360350531") no-repeat scroll -44px -80px transparent
+        }
+        .caption .votes .up, .votes .down {
+            display: block;
+            width: 20px;
+            height: 20px;
+        }
+        .caption .votes {
+            float: left;
+            margin: 0 10px 0 0;
+        }
+        .caption .meta {
+            height: 10px;
+            font-size: 10px;
+            padding: 0 0 4px 0;
+        }
+        .caption p {
+            display: inline-block;
+            margin: 0;
+        }
+        .warning {
+            background-color: #FFA;
+            padding: 5px;
+        }
+    </style>
+</head>
+<body>
+    <div>
+        <p>Trials: <input type="text" id="trials" value="2"/></p>
+        <p>Tests per trial: <input type="text" id="tests" value="2"/></p>
+        <button id="run-tests">Run</button>
+        <span class="warning">This WILL freeze your browser. Open your console to view results. </span>
+    </div>
+    <div id="captions">
+
+    </div>
+
+    <script type="text/javascript">
+        /**
+         * A little thin DOM wrapper with chaining
+         */
+        function ThinDOM(tag, attributes) {
+            this.el = document.createElement(tag);
+            if(typeof attributes != 'undefined') {
+                this.attr(attributes);
+            }
+        }
+
+        /**
+         * Iterate over all of the element's attributes.
+         * @param cb(key, value)
+         */
+        ThinDOM.prototype.append = (function(other) {
+            if(other instanceof ThinDOM) {
+                this.el.appendChild(other.get());
+            } else if (other instanceof jQuery) {
+                if(other.length > 1) {
+                    var self = this;
+                    other.each(function(i, otherEl) {
+                        self.el.appendChild(otherEl);
+                    });
+                }
+                else {
+                    this.el.appendChild(other[0]);
+                }
+            } else if (other instanceof Element) {
+                this.el.appendChild(other);
+            }
+
+            return this;
+        });
+
+        /**
+         * Set the element's style attributes
+         */
+        ThinDOM.prototype.css = (function(properties, value) {
+            if(properties.constructor === String) {
+                this.el.style.properties = value;
+            } else if (properties instanceof Object) {
+                for(var key in properties) {
+                    if(properties.hasOwnProperty(key)) {
+                        this.el.style.key = properties[key];
+                    }
+                }
+            }
+            return this;
+        });
+
+        /**
+         * Set the inner HTML of the element.
+         */
+        ThinDOM.prototype.html = (function(html) {
+            if(typeof html == 'undefined') {
+                return this.el.innerHTML;
+            }
+            else {
+                this.el.innerHTML = html;
+                return this;
+            }
+        });
+
+        ThinDOM.prototype.attr = (function(properties, value) {
+            if(properties.constructor === String) {
+                this.el.setAttribute(properties, value);
+            } else if (properties instanceof Object) {
+                for(var key in properties) {
+                    if(properties.hasOwnProperty(key)) {
+                        this.el.setAttribute(key, properties[key]);
+                    }
+                }
+            }
+            return this;
+        });
+        ThinDOM.prototype.get = (function() {
+            return this.el;
+        });
+
+
+
+
+        function CreateCaptionThinDOM(caption, targetDomElm) {
+            var points_plural = (caption.points === 1) ? '' : 's';
+            var captionDOM = new ThinDOM('div').attr('class', 'caption')
+                    .append(new ThinDOM('div').attr('class', 'votes')
+                    .append(new ThinDOM('a').attr({'class': 'up', 'href': '#'}))
+                    .append(new ThinDOM('a').attr({'class': 'down', 'href': '#'})))
+                    .append(new ThinDOM('div').attr('class', 'meta')
+                    .append(new ThinDOM('span').html(caption.author + ' - '))
+                    .append(new ThinDOM('span').html(caption.points + ' point' + points_plural)))
+                    .append(new ThinDOM('p').html(caption.caption)).get();
+            targetDomElm.appendChild(captionDOM);
+        }
+
+        function CreateCaptionjQuery(caption, targetDomElm) {
+            var points_plural = (caption.points === 1) ? '' : 's';
+            var captionDOM = $("<div />").attr('class', 'caption')
+                    .append($("<div />").attr('class', 'votes')
+                    .append($('<a />').attr({'class': 'up', 'href': '#'}))
+                    .append($('<a />').attr({'class': 'down', 'href': '#'})))
+                    .append($("<div />").attr('class', 'meta')
+                    .append($("<span />").text(caption.author + ' - '))
+                    .append($("<span />").text(caption.points + ' point' + points_plural)))
+                    .append($("<p />").text(caption.caption)).get(0);
+            targetDomElm.appendChild(captionDOM);
+        }
+
+        // this method is attrociously slow. Like...don't do it.
+        function CreateCaptionInnerHTML(caption, targetDomElm) {
+            targetDomElm.innerHTML +=
+                    '<div class="caption"><div class="votes"><a class="up" href="#"></a><a class="down" href="#"></a></div><div class="meta"><span>' + caption.author + ' - </span><span>' + caption.points + ' point' + (caption.points === 1 ? '' : 's') + '</span></div><p>' + caption.caption + '</p></div>'
+            ;
+        }
+
+        function CreateCaptionInnerHTMLAppend(caption, targetDomElm) {
+            var container = document.createElement('div');
+            container.setAttribute('class', 'caption');
+            container.innerHTML = '<div class="votes"><a class="up" href="#"></a><a class="down" href="#"></a></div><div class="meta"><span>' + caption.author + ' - </span><span>' + caption.points + ' point' + (caption.points === 1 ? '' : 's') + '</span></div><p>' + caption.caption + '</p>';
+            targetDomElm.appendChild(container);
+        }
+
+        var container = document.createElement('div');
+        container.setAttribute('class', 'caption');
+        container.innerHTML = '<div class="votes"><a class="up" href="#"></a><a class="down" href="#"></a></div><div class="meta"><span class="replace"></span><span class="replace"></span></div><p class="replace"></p>';
+        function CreateCaptionCachedDom(caption, targetDomElm) {
+            // todo: try with .text or innertext -- whatever
+            var c = container.cloneNode(true);
+            var elms = c.getElementsByClassName('replace');
+            elms[0].innerHTML = caption.author + ' - ';
+            elms[1].innerHTML = caption.points + ' point' + (caption.points === 1 ? '' : 's');
+            elms[2].innerHTML = caption.caption;
+            targetDomElm.appendChild(c);
+        }
+
+        var caption_texts = [
+            'Lorem ipsum',
+            'The narwhal bacons at midnight',
+            'Has Anyone Really Been Far Even as Decided to Use Even Go Want to do Look More Like?'
+        ];
+        var authors = [
+            'Arthur',
+            'Banconator',
+            'CatMeowMeow'
+        ];
+        function GenerateCaptions(total) {
+            var captions = [];
+            while(total--) {
+                captions.push({
+                    author: authors[Math.floor(Math.random()*authors.length)],
+                    points: Math.floor(Math.random() * 200),
+                    caption: caption_texts[Math.floor(Math.random()*caption_texts.length)]
+                });
+            }
+            return captions;
+        }
+
+        function Timer() {
+            this.start = new Date();
+        }
+        Timer.prototype.Stop = (function() {
+            var now = new Date();
+            return now - this.start;
+        });
+
+        function PerfTest(tests, creator) {
+            var container = $("#captions").empty().get(0);
+            var captionList = GenerateCaptions(tests);
+            var t = new Timer();
+            for (var i in captionList) {
+                creator(captionList[i], container);
+            }
+            return t.Stop();
+        }
+
+        function PerfTestTrials() {
+            var trials = Number($("#trials").val());
+            var tests = Number($("#tests").val());
+            var testers = {
+                'jQuery':     CreateCaptionjQuery,
+                //'innerHTMLBad':  CreateCaptionInnerHTML,
+                'ThinDOM':    CreateCaptionThinDOM,
+                'innerHTML':    CreateCaptionInnerHTMLAppend,
+                'cachedDom':  CreateCaptionCachedDom
+            };
+            console.log("Testing DOM over " + trials + " trials with n=" + tests + ". Using jQuery version " + $("#trials").jquery + ". All results in total milliseconds.");
+            var header = "  ";
+            for(var testkey in testers) {
+                header += ("    " + testkey);
+            }
+            console.log(header);
+            for(var j = 0; j < trials; j++) {
+                var row = (j+1);
+                for(var testkey in testers) {
+                    var tester = testers[testkey];
+                    var time = PerfTest(tests, tester);
+                    row += '    ' + time;
+                }
+                console.log(row);
+            }
+        }
+        jQuery("#run-tests").click(PerfTestTrials);
+
+    </script>
+</body>
+</html>
+
