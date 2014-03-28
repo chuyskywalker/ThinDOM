@@ -1,0 +1,19 @@
+{
+  "name": "ThinDOM",
+  "version": "0.0.1",
+  "main": [
+    "dist/thinDOM.min.js"
+  ],
+  "ignore": [
+  ],
+  "dependencies": {
+    "lodash": ">= 2.4.1"
+  },
+  "overrides": {
+    
+  },
+  "devDependencies": {
+    "qunit": "~1.14.0",
+    "coffee-script": "~1.7.1"
+  }
+}
