@@ -1,16 +1,32 @@
 /**
  * thindom - Inspired by jQuery, this simple library lets you create DOM elements really fast, with significantly more expressiveness than native DOM methods.
- * @version v0.0.2
+ * @version v0.0.3
  * @link https://github.com/somecallmechief/ThinDOM
  * @license 
  */
-
-/*
-A little thin DOM wrapper with chaining
- */
-
 (function() {
-  var ThinDOM, thisGlobal;
+  var ThinDOM, removeMethod, thisGlobal;
+
+  thisGlobal = (typeof global !== 'undefined' && global ? global : (typeof window !== 'undefined' ? window : this));
+
+  removeMethod = (function() {
+    var el;
+    if (typeof document !== 'undefined') {
+      el = document.body;
+      if (el.remove) {
+        return 'remove';
+      } else if (el.removeNode) {
+        return 'removeNode';
+      } else {
+        return 'valueOf';
+      }
+    }
+  })();
+
+
+  /*
+  A little thin DOM wrapper with chaining
+   */
 
   ThinDOM = function(tag, attributes) {
     this.el = document.createElement(tag);
@@ -21,8 +37,7 @@ A little thin DOM wrapper with chaining
 
 
   /*
-  Iterate over all of the element's attributes.
-  @param cb(key, value)
+  Append one element to another
    */
 
   ThinDOM.prototype.append = (function(other) {
@@ -45,6 +60,17 @@ A little thin DOM wrapper with chaining
       }
     }
     return self;
+  });
+
+
+  /*
+  Remove the element
+   */
+
+  ThinDOM.prototype.remove = (function() {
+    var self;
+    self = this;
+    self.el[removeMethod]();
   });
 
 
@@ -132,8 +158,6 @@ A little thin DOM wrapper with chaining
   ThinDOM.prototype.get = (function() {
     return this.el;
   });
-
-  thisGlobal = (typeof global !== 'undefined' && global ? global : (typeof window !== 'undefined' ? window : this));
 
   thisGlobal.ThinDOM = ThinDOM;
 

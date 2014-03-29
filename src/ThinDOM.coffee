@@ -1,3 +1,16 @@
+thisGlobal = (if typeof global isnt 'undefined' and global then global else ((if typeof window isnt 'undefined' then window else this)))
+
+removeMethod = (->
+  if typeof document isnt 'undefined'
+    el = document.body
+    if el.remove
+      'remove'
+    else if el.removeNode
+      'removeNode'
+    else
+      'valueOf'
+)()
+
 ###
 A little thin DOM wrapper with chaining
 ###
@@ -7,8 +20,7 @@ ThinDOM = (tag, attributes) ->
   return
 
 ###
-Iterate over all of the element's attributes.
-@param cb(key, value)
+Append one element to another
 ###
 ThinDOM::append = ((other) ->
   self = this
@@ -25,6 +37,15 @@ ThinDOM::append = ((other) ->
       self.el.appendChild other[0]
   else self.el.appendChild other  if _.isElement(other)
   self
+)
+
+###
+Remove the element
+###
+ThinDOM::remove = (() ->
+  self = this
+  self.el[removeMethod]()
+  return
 )
 
 ###
@@ -93,5 +114,5 @@ ThinDOM::get = (->
   @el
 )
 
-thisGlobal = (if typeof global isnt 'undefined' and global then global else ((if typeof window isnt 'undefined' then window else this)))
+
 thisGlobal.ThinDOM = ThinDOM
