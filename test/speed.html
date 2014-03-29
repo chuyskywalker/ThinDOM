@@ -67,11 +67,12 @@
     </div>
 	
 	<!-- inject:js -->
-	<script src="../src/ThinDOM.js"></script>
+	<script src="../src/thinDOM.js"></script>
 	<!-- endinject -->
 
     <!-- bower:js -->
     <script src="../bower_components/lodash/dist/lodash.compat.js"></script>
+    <script src="../bower_components/Faker/Faker.js"></script>
     <!-- endbower -->
 	
     <script type="text/javascript">
@@ -129,23 +130,13 @@
             targetDomElm.appendChild(c);
         }
 
-        var caption_texts = [
-            'Lorem ipsum',
-            'The narwhal bacons at midnight',
-            'Has Anyone Really Been Far Even as Decided to Use Even Go Want to do Look More Like?'
-        ];
-        var authors = [
-            'Arthur',
-            'Banconator',
-            'CatMeowMeow'
-        ];
         function GenerateCaptions(total) {
             var captions = [];
             while(total--) {
                 captions.push({
-                    author: authors[Math.floor(Math.random()*authors.length)],
-                    points: Math.floor(Math.random() * 200),
-                    caption: caption_texts[Math.floor(Math.random()*caption_texts.length)]
+                    author: Faker.Name.findName(),
+                    points: Faker.Helpers.randomNumber(999999),
+                    caption: Faker.Lorem.paragraph()
                 });
             }
             return captions;

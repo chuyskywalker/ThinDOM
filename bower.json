@@ -6,9 +6,16 @@
   ],
   "ignore": [],
   "dependencies": {
-    "lodash": ">= 2.4.1"
+    "lodash": ">= 2.4.1",
+    "Faker": "~0.7.0"
   },
-  "overrides": {},
+  "overrides": {
+    "faker": {
+      "main": [
+        "dist/faker.min.js"
+      ]
+    }
+  },
   "devDependencies": {
     "qunit": "~1.14.0",
     "coffee-script": "~1.7.1"

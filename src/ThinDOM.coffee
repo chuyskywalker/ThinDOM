@@ -92,3 +92,6 @@ Get the HTML Element
 ThinDOM::get = (->
   @el
 )
+
+thisGlobal = (if typeof global isnt 'undefined' and global then global else ((if typeof window isnt 'undefined' then window else this)))
+thisGlobal.ThinDOM = ThinDOM

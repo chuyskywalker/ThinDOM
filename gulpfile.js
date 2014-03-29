@@ -65,6 +65,7 @@ gulp.task('concat', function() {
         .pipe(plugins.concat('thinDOM.js'))
         .pipe(header(extended, { pkg: pkg }))
         .pipe(gulp.dest(paths.release))
+		.pipe(gulp.dest(paths.src))
         .pipe(rename({ suffix: '.min' }))
         .pipe(plugins.uglify())
         .pipe(header(succint, { pkg: pkg }))
