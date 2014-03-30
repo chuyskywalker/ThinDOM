@@ -1,6 +1,6 @@
 /**
  * thindom - Inspired by jQuery, this simple library lets you create DOM elements really fast, with significantly more expressiveness than native DOM methods.
- * @version v0.0.3
+ * @version v0.0.5
  * @link https://github.com/somecallmechief/ThinDOM
  * @license 
  */
@@ -28,8 +28,11 @@
   A little thin DOM wrapper with chaining
    */
 
-  ThinDOM = function(tag, attributes) {
-    this.el = document.createElement(tag);
+  ThinDOM = function(tag, attributes, el) {
+    if (el == null) {
+      el = null;
+    }
+    this.el = el || document.createElement(tag);
     if (attributes) {
       this.attr(attributes);
     }
