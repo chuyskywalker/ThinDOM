@@ -2,7 +2,7 @@
   "name": "thindom",
   "title": "A thin DOM wrapper",
   "description": "Inspired by jQuery, this simple library lets you create DOM elements really fast, with significantly more expressiveness than native DOM methods.",
-  "version": "0.0.7",
+  "version": "0.0.8",
   "homepage": "https://github.com/somecallmechief/ThinDOM",
   "author": {
     "name": "Christopher Froehlich",

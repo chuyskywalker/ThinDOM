@@ -1,11 +1,11 @@
 /**
  * thindom - Inspired by jQuery, this simple library lets you create DOM elements really fast, with significantly more expressiveness than native DOM methods.
- * @version v0.0.6
+ * @version v0.0.7
  * @link https://github.com/somecallmechief/ThinDOM
  * @license 
  */
 (function() {
-  var ThinDOM, obj, prop, removeMethod, thisGlobal;
+  var ThinDOM, append, attr, css, html, remove, removeMethod, text, thisGlobal;
 
   thisGlobal = (typeof global !== 'undefined' && global ? global : (typeof window !== 'undefined' ? window : this));
 
@@ -23,67 +23,7 @@
     }
   })();
 
-  prop = function(obj, name, value, writable, configurable, enumerable) {
-    if (writable == null) {
-      writable = false;
-    }
-    if (configurable == null) {
-      configurable = false;
-    }
-    if (enumerable == null) {
-      enumerable = false;
-    }
-    if (!obj) {
-      throw new Error("Cannot define a property without an Object.");
-    }
-    if (typeof name !== "string") {
-      throw new Error("Cannot create a property without a valid property name.");
-    }
-    Object.defineProperty(obj, name, {
-      value: value,
-      writable: writable,
-      configurable: configurable,
-      enumerable: enumerable
-    });
-    return obj;
-  };
-
-  obj = function(properties, inheritsFromPrototype) {
-    if (properties == null) {
-      properties = {};
-    }
-    if (inheritsFromPrototype == null) {
-      inheritsFromPrototype = null;
-    }
-    obj = Object.create(inheritsFromPrototype, properties);
-    prop(obj, 'add', (function(name, val, writable, configurable, enumerable) {
-      return prop(obj, name, val, writable, configurable, enumerable);
-    }), false, false, false);
-    return obj;
-  };
-
-
-  /*
-  A little thin DOM wrapper with chaining
-   */
-
-  ThinDOM = function(tag, attributes, el) {
-    var ret;
-    if (el == null) {
-      el = null;
-    }
-    ret = obj();
-    return ret.add('el', el || document.createElement(tag));
-  };
-
-
-  /*
-  	Append one element to another
-   */
-
-  ret.add('append', function(other) {
-    var self;
-    self = ret;
+  append = function(self, other) {
     if (other instanceof ThinDOM) {
       self.el.appendChild(other.get());
     } else if (other instanceof jQuery) {
@@ -100,48 +40,27 @@
       }
     }
     return self;
-  });
+  };
 
-
-  /*
-  Remove the element
-   */
-
-  ret.add('remove', function() {
-    var self;
-    self = ret;
+  remove = function(self) {
     self.el[removeMethod]();
-  });
+  };
 
-
-  /*
-  Set the element's style attributes
-   */
-
-  ret.add('css', function(properties, value) {
-    var self;
-    self = ret;
+  css = function(self, properties, value) {
     if (properties.constructor === String) {
-      self.el.style.properties = value;
+      return self.el.style.properties = value;
     } else if (properties instanceof Object) {
-      _.forOwn(properties, function(val, key) {
+      return _.forOwn(properties, function(val, key) {
         if (!_.isEmpty(val)) {
           self.el.style.key = val;
         }
       });
     }
-    return self;
-  });
+  };
 
-
-  /*
-  Set the inner HTML of the element.
-   */
-
-  ret.add('html', function(html) {
-    var self, val;
+  html = function(self, html) {
+    var val;
     val = void 0;
-    self = ret;
     if (!html) {
       val = self.el.innerHTML;
     } else {
@@ -149,35 +68,22 @@
       val = self;
     }
     return val;
-  });
+  };
 
-
-  /*
-  Set the inner text of the element as a Text Node
-   */
-
-  ret.add('text', function(text) {
-    var self, t, val;
+  text = function(self, str) {
+    var t, val;
     val = void 0;
-    self = ret;
-    if (!text) {
+    if (!str) {
       val = self.el.innerHTML;
     } else {
-      t = document.createTextNode(text);
+      t = document.createTextNode(str);
       self.el.appendChild(t);
       val = self;
     }
     return val;
-  });
+  };
 
-
-  /*
-  Set attributes on the element
-   */
-
-  ret.add('attr', function(properties, value) {
-    var self;
-    self = ret;
+  attr = function(self, properties, value) {
     if (_.isString(properties)) {
       self.el.setAttribute(properties, value);
     } else if (_.isObject(properties)) {
@@ -188,22 +94,74 @@
       });
     }
     return self;
-  });
+  };
 
 
   /*
-  Get the HTML Element
+  A little thin DOM wrapper with chaining
    */
 
-  ret.add('get', function() {
-    return ret.el;
-  });
+  ThinDOM = function(tag, attributes, el) {
+    var ret;
+    if (el == null) {
+      el = null;
+    }
+    ret = {};
+    ret.el = el || document.createElement(tag);
 
-  if (attributes) {
-    ret.attr(attributes);
-  }
+    /*
+    Append one element to another
+     */
+    ret.append = function(other) {
+      return append(ret, other);
+    };
 
-  ret;
+    /*
+    Remove the element
+     */
+    ret.remove = function() {
+      return remove(ret);
+    };
+
+    /*
+    Set the element's style attributes
+     */
+    ret.css = function(properties, value) {
+      return css(ret, properies, value);
+    };
+
+    /*
+    Set the inner HTML of the element.
+     */
+    ret.html = function(html) {
+      return html(ret, html);
+    };
+
+    /*
+    Set the inner text of the element as a Text Node
+     */
+    ret.text = function(str) {
+      return text(ret, str);
+    };
+
+    /*
+    Set attributes on the element
+     */
+    ret.attr = function(properties, value) {
+      return attr(ret, properties, value);
+    };
+
+    /*
+    Get the HTML Element
+     */
+    ret.get = function() {
+      return ret.el;
+    };
+    if (attributes) {
+      ret.attr(attributes);
+    }
+    return ret;
+  };
 
   thisGlobal.ThinDOM = ThinDOM;
 
