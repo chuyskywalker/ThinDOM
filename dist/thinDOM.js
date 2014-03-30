@@ -1,6 +1,6 @@
 /**
  * thindom - Inspired by jQuery, this simple library lets you create DOM elements really fast, with significantly more expressiveness than native DOM methods.
- * @version v0.0.7
+ * @version v0.0.8
  * @link https://github.com/somecallmechief/ThinDOM
  * @license 
  */
@@ -127,7 +127,7 @@
     Set the element's style attributes
      */
     ret.css = function(properties, value) {
-      return css(ret, properies, value);
+      return css(ret, properties, value);
     };
 
     /*

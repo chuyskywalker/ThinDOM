@@ -88,7 +88,7 @@ ThinDOM = (tag, attributes, el = null) ->
   Set the element's style attributes
   ###
   ret.css = (properties, value) ->
-    css ret, properies, value
+    css ret, properties, value
 
   ###
   Set the inner HTML of the element.
@@ -117,4 +117,5 @@ ThinDOM = (tag, attributes, el = null) ->
   if attributes then ret.attr attributes
   ret
 
+# export ThinDom to the global object  
 thisGlobal.ThinDOM = ThinDOM

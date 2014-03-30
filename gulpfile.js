@@ -116,9 +116,7 @@ gulp.task('npm', function (done) {
 // Init watch
 gulp.task('watch', function () {
     //gulp.watch(files.js, ['inject']);
-    gulp.src([files.coffee], { read: false })
-        .pipe(watch({}, gulp.task['build']))
-        .pipe(plumber());
+    gulp.watch(files.coffee, ['concat', 'inject']);
 });
 
 gulp.task('test', function () {
