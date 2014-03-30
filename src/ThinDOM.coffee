@@ -14,9 +14,9 @@ removeMethod = (->
 ###
 A little thin DOM wrapper with chaining
 ###
-ThinDOM = (tag, attributes) ->
-  @el = document.createElement(tag)
-  @attr attributes  if attributes
+ThinDOM = (tag, attributes, el = null) ->
+  @el = el or document.createElement(tag)
+  @attr attributes if attributes
   return
 
 ###
