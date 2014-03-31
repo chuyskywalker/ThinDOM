@@ -1,6 +1,6 @@
 /**
  * thindom - Inspired by jQuery, this simple library lets you create DOM elements really fast, with significantly more expressiveness than native DOM methods.
- * @version v0.0.9
+ * @version v0.0.11
  * @link https://github.com/somecallmechief/ThinDOM
  * @license 
  */
@@ -29,7 +29,7 @@
   })();
 
   append = function(self, other) {
-    if (other instanceof ThinDOM) {
+    if (other.THINDOM) {
       self.el.appendChild(other.get());
     } else if (other instanceof jQuery) {
       if (other.length > 1) {
@@ -52,9 +52,9 @@
   };
 
   css = function(self, properties, value) {
-    if (properties.constructor === String) {
+    if (_.isString(properties)) {
       return self.el.style.properties = value;
-    } else if (properties instanceof Object) {
+    } else if (_.isPlainObject(properties)) {
       return _.forOwn(properties, function(val, key) {
         if (!_.isEmpty(val)) {
           self.el.style.key = val;
@@ -112,6 +112,7 @@
       el = null;
     }
     ret = {};
+    ret.THINDOM = 'THINDOM';
     ret.el = el || document.createElement(tag);
     ret.add = function(name, val) {
       return prop(ret, name, val);

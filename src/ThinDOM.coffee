@@ -16,7 +16,7 @@ removeMethod = (->
 )()
 
 append = (self, other) ->
-  if other instanceof ThinDOM
+  if other.THINDOM
     self.el.appendChild other.get()
   else if other instanceof jQuery
     if other.length > 1
@@ -33,9 +33,9 @@ remove = (self) ->
   return
 
 css = (self, properties, value) ->
-  if properties.constructor is String
+  if _.isString properties
     self.el.style.properties = value
-  else if properties instanceof Object
+  else if _.isPlainObject properties
     _.forOwn properties, (val, key) ->
       self.el.style.key = val  unless _.isEmpty(val)
       return
@@ -74,6 +74,9 @@ A little thin DOM wrapper with chaining
 ###
 ThinDOM = (tag, attributes, el = null) ->
   ret = {} 
+  
+  ret.THINDOM = 'THINDOM'
+  
   ret.el = el or document.createElement(tag)
   ret.add = (name, val) ->
     prop ret, name, val
