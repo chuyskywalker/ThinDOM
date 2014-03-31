@@ -1,13 +1,18 @@
 /**
  * thindom - Inspired by jQuery, this simple library lets you create DOM elements really fast, with significantly more expressiveness than native DOM methods.
- * @version v0.0.8
+ * @version v0.0.9
  * @link https://github.com/somecallmechief/ThinDOM
  * @license 
  */
 (function() {
-  var ThinDOM, append, attr, css, html, remove, removeMethod, text, thisGlobal;
+  var ThinDOM, append, attr, css, html, prop, remove, removeMethod, text, thisGlobal;
 
   thisGlobal = (typeof global !== 'undefined' && global ? global : (typeof window !== 'undefined' ? window : this));
+
+  prop = function(obj, name, value) {
+    obj[name] = value;
+    return obj;
+  };
 
   removeMethod = (function() {
     var el;
@@ -108,6 +113,9 @@
     }
     ret = {};
     ret.el = el || document.createElement(tag);
+    ret.add = function(name, val) {
+      return prop(ret, name, val);
+    };
 
     /*
     Append one element to another

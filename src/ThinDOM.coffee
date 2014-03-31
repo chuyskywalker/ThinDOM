@@ -1,5 +1,9 @@
 thisGlobal = (if typeof global isnt 'undefined' and global then global else ((if typeof window isnt 'undefined' then window else this)))
 
+prop = (obj, name, value) ->
+  obj[name] = value
+  obj
+
 removeMethod = (->
   if typeof document isnt 'undefined'
     el = document.body
@@ -69,9 +73,11 @@ attr = (self, properties, value) ->
 A little thin DOM wrapper with chaining
 ###
 ThinDOM = (tag, attributes, el = null) ->
-  ret = {}
+  ret = {} 
   ret.el = el or document.createElement(tag)
-
+  ret.add = (name, val) ->
+    prop ret, name, val
+  
   ###
   Append one element to another
   ###
