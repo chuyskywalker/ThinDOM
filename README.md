@@ -7,15 +7,15 @@ significantly more expressiveness than native DOM methods.
 ![How fast? Super fast.](http://i.imgur.com/nFw39JP.png)
 
 ## Usage
-A full example is on [jsfiddle](http://jsfiddle.net/rRFgz/11/).
+
 
 <pre><code>
-var captionDOM = new ThinDOM('div').attr('class', 'caption')
-	.append(new ThinDOM('div').attr('class', 'votes')
-			.append(new ThinDOM('a').attr({'class': 'up', 'href': '#'}))
-			.append(new ThinDOM('a').attr({'class': 'down', 'href': '#'})))
-	.append(new ThinDOM('div').attr('class', 'meta')
-			.append(new ThinDOM('span').text(author + ' - '))
-			.append(new ThinDOM('span').text(points + ' point' + plural)))
-	.append(new ThinDOM('p').html(body)).get();
+var captionDOM = ThinDOM('div').attr('class', 'caption')
+	.append(ThinDOM('div').attr('class', 'votes')
+			.append(ThinDOM('a').attr({'class': 'up', 'href': '#'}))
+			.append(ThinDOM('a').attr({'class': 'down', 'href': '#'})))
+	.append(ThinDOM('div').attr('class', 'meta')
+			.append(ThinDOM('span').text(author + ' - '))
+			.append(ThinDOM('span').text(points + ' point' + plural)))
+	.append(ThinDOM('p').html(body)).get();
 </code></pre>
