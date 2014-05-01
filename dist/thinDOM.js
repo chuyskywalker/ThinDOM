@@ -57,7 +57,7 @@
     } else if (_.isPlainObject(properties)) {
       return _.forOwn(properties, function(val, key) {
         if (!_.isEmpty(val)) {
-          self.el.style.key = val;
+          self.el.style[key] = val;
         }
       });
     }

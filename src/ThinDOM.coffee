@@ -37,7 +37,7 @@ css = (self, properties, value) ->
     self.el.style.properties = value
   else if _.isPlainObject properties
     _.forOwn properties, (val, key) ->
-      self.el.style.key = val  unless _.isEmpty(val)
+      self.el.style[key] = val  unless _.isEmpty(val)
       return
 
 html = (self, html) ->
