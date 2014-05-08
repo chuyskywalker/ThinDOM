@@ -79,6 +79,23 @@ css = (self, properties, value) ->
       return
 
 ###
+Add data props
+per: http://jsperf.com/data-dataset/9
+setAttribute is fastest
+###
+data = (self, properties, value) ->
+  if _.isString properties
+    if false is (properties.indexOf('data-') is 0)
+      properties = 'data-' + properties
+    attr self, properties, value
+  else if _.isPlainObject properties
+    _.forOwn properties, (val, key) ->
+      if false is (key.indexOf('data-') is 0)
+        key = 'data-' + key
+      attr self, key, value
+      return
+
+###
 Set the inner HTML (slow)
 ###
 html = (self, html) ->
