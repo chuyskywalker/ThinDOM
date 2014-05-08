@@ -1,9 +1,32 @@
+###
+Capture the global object in order of: global, window, this
+###
 thisGlobal = (if typeof global isnt 'undefined' and global then global else ((if typeof window isnt 'undefined' then window else this)))
 
+###
+Convert a hyphened-property to camelCaseProperty
+###
+camelCase = (->
+  toUpper = (match, group1) ->
+    if group1 then group1.toUpperCase() else ''
+    
+  defaultRegex = /[-_]+(.)?/g
+  ret = (str, delimiters) ->
+    if delemiters then regex = new RegExp '[' + delimiters + ']+(.)?', 'g' else regex = defaultRegex
+    str.replace regex, toUpper
+  ret
+)()
+
+###
+Convenience method for adding props to objects
+###
 prop = (obj, name, value) ->
   obj[name] = value
   obj
 
+###
+Capture the correct remove method for use when dropping nodes
+###
 removeMethod = (->
   if typeof document isnt 'undefined'
     el = document.body
@@ -15,6 +38,9 @@ removeMethod = (->
       'valueOf'
 )()
 
+###
+Append one node to another
+###
 append = (self, other) ->
   if other.THINDOM
     self.el.appendChild other.get()
@@ -28,18 +54,33 @@ append = (self, other) ->
   else self.el.appendChild other  if _.isElement(other)
   self
 
+###
+Drop a node
+###
 remove = (self) ->
   self.el[removeMethod]()
   return
 
+getPropName = (key) ->
+  ret = key
+  if _.contains key, '-'
+    ret = camelCase key
+  ret  
+
+###
+Add styles
+###
 css = (self, properties, value) ->
   if _.isString properties
     self.el.style.properties = value
   else if _.isPlainObject properties
     _.forOwn properties, (val, key) ->
-      self.el.style[key] = val  unless _.isEmpty(val)
+      self.el.style[key] = val
       return
 
+###
+Set the inner HTML (slow)
+###
 html = (self, html) ->
   val = undefined
   unless html
@@ -49,6 +90,9 @@ html = (self, html) ->
     val = self
   val
 
+###
+Add text node (fast)
+###
 text = (self, str) ->
   val = undefined
   unless str
@@ -59,12 +103,15 @@ text = (self, str) ->
     val = self
   val
 
+###
+Set props on the node 
+###
 attr = (self, properties, value) ->
   if _.isString(properties)
     self.el.setAttribute properties, value
   else if _.isObject(properties)
     _.forOwn properties, (val, key) ->
-      self.el.setAttribute key, val  unless _.isEmpty(val)
+      self.el.setAttribute key, val
       return
 
   self
