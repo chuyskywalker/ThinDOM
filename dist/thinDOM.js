@@ -122,7 +122,9 @@ Capture the global object in order of: global, window, this
       return self.el.style.properties = value;
     } else if (_.isPlainObject(properties)) {
       return _.forOwn(properties, function(val, key) {
-        self.el.style[key] = val;
+        if (val !== '') {
+          self.el.style[key] = val;
+        }
       });
     }
   };
@@ -195,7 +197,9 @@ Capture the global object in order of: global, window, this
       self.el.setAttribute(properties, value);
     } else if (_.isObject(properties)) {
       _.forOwn(properties, function(val, key) {
-        self.el.setAttribute(key, val);
+        if (val !== '') {
+          self.el.setAttribute(key, val);
+        }
       });
     }
     return self;
