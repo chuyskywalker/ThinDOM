@@ -75,7 +75,8 @@ css = (self, properties, value) ->
     self.el.style.properties = value
   else if _.isPlainObject properties
     _.forOwn properties, (val, key) ->
-      self.el.style[key] = val
+      if val isnt ''
+        self.el.style[key] = val
       return
 
 ###
@@ -128,7 +129,8 @@ attr = (self, properties, value) ->
     self.el.setAttribute properties, value
   else if _.isObject(properties)
     _.forOwn properties, (val, key) ->
-      self.el.setAttribute key, val
+      if val isnt ''
+        self.el.setAttribute key, val
       return
 
   self
