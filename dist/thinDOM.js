@@ -1,6 +1,6 @@
 /**
  * thindom - Inspired by jQuery, this simple library lets you create DOM elements really fast, with significantly more expressiveness than native DOM methods.
- * @version v0.0.12
+ * @version v1.0.0
  * @link https://github.com/somecallmechief/ThinDOM
  * @license 
  */
@@ -10,7 +10,7 @@ Capture the global object in order of: global, window, this
  */
 
 (function() {
-  var ThinDOM, append, attr, camelCase, css, getPropName, html, prop, remove, removeMethod, text, thisGlobal;
+  var ThinDOM, append, attr, camelCase, css, data, getPropName, html, prop, remove, removeMethod, text, thisGlobal;
 
   thisGlobal = (typeof global !== 'undefined' && global ? global : (typeof window !== 'undefined' ? window : this));
 
@@ -123,6 +123,29 @@ Capture the global object in order of: global, window, this
     } else if (_.isPlainObject(properties)) {
       return _.forOwn(properties, function(val, key) {
         self.el.style[key] = val;
+      });
+    }
+  };
+
+
+  /*
+  Add data props
+  per: http://jsperf.com/data-dataset/9
+  setAttribute is fastest
+   */
+
+  data = function(self, properties, value) {
+    if (_.isString(properties)) {
+      if (false === (properties.indexOf('data-') === 0)) {
+        properties = 'data-' + properties;
+      }
+      return attr(self, properties, value);
+    } else if (_.isPlainObject(properties)) {
+      return _.forOwn(properties, function(val, key) {
+        if (false === (key.indexOf('data-') === 0)) {
+          key = 'data-' + key;
+        }
+        attr(self, key, value);
       });
     }
   };
