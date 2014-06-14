@@ -101,7 +101,7 @@ Set the inner HTML (slow)
 ###
 html = (self, html) ->
   val = undefined
-  unless html
+  unless html?
     val = self.el.innerHTML
   else
     self.el.innerHTML = html

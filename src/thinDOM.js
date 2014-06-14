@@ -160,7 +160,7 @@ Capture the global object in order of: global, window, this
   html = function(self, html) {
     var val;
     val = void 0;
-    if (!html) {
+    if (html == null) {
       val = self.el.innerHTML;
     } else {
       self.el.innerHTML = html;
