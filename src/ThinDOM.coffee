@@ -168,8 +168,8 @@ ThinDOM = (tag, attributes, el = null) ->
   ###
   Set the inner HTML of the element.
   ###
-  ret.html = (html) ->
-    html ret, html
+  ret.html = (html_content) ->
+    html ret, html_content
   
   ###
   Set the inner text of the element as a Text Node

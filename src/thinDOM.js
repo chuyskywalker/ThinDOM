@@ -1,6 +1,6 @@
 /**
  * thindom - Inspired by jQuery, this simple library lets you create DOM elements really fast, with significantly more expressiveness than native DOM methods.
- * @version v1.0.0
+ * @version v1.0.1
  * @link https://github.com/somecallmechief/ThinDOM
  * @license 
  */
@@ -246,8 +246,8 @@ Capture the global object in order of: global, window, this
     /*
     Set the inner HTML of the element.
      */
-    ret.html = function(html) {
-      return html(ret, html);
+    ret.html = function(html_content) {
+      return html(ret, html_content);
     };
 
     /*
