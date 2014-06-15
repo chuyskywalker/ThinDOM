@@ -119,7 +119,7 @@ Capture the global object in order of: global, window, this
 
   css = function(self, properties, value) {
     if (_.isString(properties)) {
-      return self.el.style.properties = value;
+      return self.el.style[properties] = value;
     } else if (_.isPlainObject(properties)) {
       return _.forOwn(properties, function(val, key) {
         if (val !== '') {

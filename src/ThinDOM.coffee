@@ -72,7 +72,7 @@ Add styles
 ###
 css = (self, properties, value) ->
   if _.isString properties
-    self.el.style.properties = value
+    self.el.style[properties] = value
   else if _.isPlainObject properties
     _.forOwn properties, (val, key) ->
       if val isnt ''
