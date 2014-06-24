@@ -72,7 +72,7 @@ Add styles
 ###
 css = (self, properties, value) ->
   if _.isString properties
-    self.el.style.properties = value
+    self.el.style[properties] = value
   else if _.isPlainObject properties
     _.forOwn properties, (val, key) ->
       if val isnt ''
@@ -101,7 +101,7 @@ Set the inner HTML (slow)
 ###
 html = (self, html) ->
   val = undefined
-  unless html
+  unless html?
     val = self.el.innerHTML
   else
     self.el.innerHTML = html
@@ -168,8 +168,8 @@ ThinDOM = (tag, attributes, el = null) ->
   ###
   Set the inner HTML of the element.
   ###
-  ret.html = (html) ->
-    html ret, html
+  ret.html = (html_content) ->
+    html ret, html_content
   
   ###
   Set the inner text of the element as a Text Node
