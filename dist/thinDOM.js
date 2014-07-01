@@ -1,6 +1,6 @@
 /**
  * thindom - Inspired by jQuery, this simple library lets you create DOM elements really fast, with significantly more expressiveness than native DOM methods.
- * @version v1.0.1
+ * @version v1.0.2
  * @link https://github.com/somecallmechief/ThinDOM
  * @license 
  */
