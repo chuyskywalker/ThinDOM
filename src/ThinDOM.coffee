@@ -38,22 +38,47 @@ removeMethod = (->
       'valueOf'
 )()
 
+_append = (el, other) ->
+  el.appendChild other
+
 ###
 Append one node to another
 ###
 append = (self, other) ->
   if other.THINDOM
-    self.el.appendChild other.get()
+    _append self.el, other.get()
+  else if _.isElement other 
+    _append self.el, other
+  else if other instanceof jQuery
+  	if other.length > 1
+  	  _.forEach other, (i, otherEl) ->
+  		  _append self.el, otherEl
+  		  return
+  	else
+  	  _append self.el, other[0]
+  self
+
+_prepend = (el, other) ->
+  el.insertBefore other, el.firstChild
+  el
+  
+###
+Prepend one node to the first child node position of another
+###
+prepend = (self, other) ->
+  if other.THINDOM
+    _prepend self.el, other.get()
+  else if _.isElement other 
+	  _prepend self.el, other  
   else if other instanceof jQuery
     if other.length > 1
       _.forEach other, (i, otherEl) ->
-        self.el.appendChild otherEl
+        _prepend self.el, otherEl
         return
     else
-      self.el.appendChild other[0]
-  else self.el.appendChild other  if _.isElement(other)
-  self
-
+      _prepend self.el, other[0]
+  self  
+  
 ###
 Drop a node
 ###
@@ -152,6 +177,12 @@ ThinDOM = (tag, attributes, el = null) ->
   ###
   ret.append = (other) ->
     append ret, other
+  
+  ###
+  Prepend one element to another
+  ###
+  ret.prepend = (other) ->
+    prepend ret, other
   
   ###
   Remove the element

@@ -10,7 +10,7 @@ Capture the global object in order of: global, window, this
  */
 
 (function() {
-  var ThinDOM, append, attr, camelCase, css, data, getPropName, html, prop, remove, removeMethod, text, thisGlobal;
+  var ThinDOM, append, attr, camelCase, css, data, getPropName, html, prepend, prop, remove, removeMethod, text, thisGlobal, _append, _prepend;
 
   thisGlobal = (typeof global !== 'undefined' && global ? global : (typeof window !== 'undefined' ? window : this));
 
@@ -70,6 +70,10 @@ Capture the global object in order of: global, window, this
     }
   })();
 
+  _append = function(el, other) {
+    return el.appendChild(other);
+  };
+
 
   /*
   Append one node to another
@@ -77,18 +81,43 @@ Capture the global object in order of: global, window, this
 
   append = function(self, other) {
     if (other.THINDOM) {
-      self.el.appendChild(other.get());
+      _append(self.el, other.get());
+    } else if (_.isElement(other)) {
+      _append(self.el, other);
     } else if (other instanceof jQuery) {
       if (other.length > 1) {
         _.forEach(other, function(i, otherEl) {
-          self.el.appendChild(otherEl);
+          _append(self.el, otherEl);
         });
       } else {
-        self.el.appendChild(other[0]);
+        _append(self.el, other[0]);
       }
-    } else {
-      if (_.isElement(other)) {
-        self.el.appendChild(other);
+    }
+    return self;
+  };
+
+  _prepend = function(el, other) {
+    el.insertBefore(other, el.firstChild);
+    return el;
+  };
+
+
+  /*
+  Prepend one node to the first child node position of another
+   */
+
+  prepend = function(self, other) {
+    if (other.THINDOM) {
+      _prepend(self.el, other.get());
+    } else if (_.isElement(other)) {
+      _prepend(self.el, other);
+    } else if (other instanceof jQuery) {
+      if (other.length > 1) {
+        _.forEach(other, function(i, otherEl) {
+          _prepend(self.el, otherEl);
+        });
+      } else {
+        _prepend(self.el, other[0]);
       }
     }
     return self;
@@ -227,6 +256,13 @@ Capture the global object in order of: global, window, this
      */
     ret.append = function(other) {
       return append(ret, other);
+    };
+
+    /*
+    Prepend one element to another
+     */
+    ret.prepend = function(other) {
+      return prepend(ret, other);
     };
 
     /*
