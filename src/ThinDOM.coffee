@@ -1,3 +1,6 @@
+_ = require 'lodash'
+jQuery = require 'jquery'
+
 ###
 Capture the global object in order of: global, window, this
 ###
@@ -225,3 +228,5 @@ ThinDOM = (tag, attributes, el = null) ->
 
 # export ThinDom to the global object  
 thisGlobal.ThinDOM = ThinDOM
+
+module.exports = ThinDOM

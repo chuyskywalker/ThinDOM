@@ -1,12 +1,11 @@
 {
   "name": "thindom",
-  "version": "1.0.5",
+  "version": "1.0.6",
   "main": [
-    "dist/thinDOM.min.js"
+    "dist/thinDOM.js"
   ],
   "ignore": [],
   "dependencies": {
-    "lodash": ">= 2.4.1",
     "Faker": "~0.7.0"
   },
   "overrides": {
