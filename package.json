@@ -2,7 +2,7 @@
   "name": "thindom",
   "title": "A thin DOM wrapper",
   "description": "Inspired by jQuery, this simple library lets you create DOM elements really fast, with significantly more expressiveness than native DOM methods.",
-  "version": "1.0.3",
+  "version": "1.0.4",
   "homepage": "https://github.com/somecallmechief/ThinDOM",
   "author": {
     "name": "Christopher Froehlich",
@@ -21,12 +21,16 @@
       "url": "http://creativecommons.org/about/pdm"
     }
   ],
+  "main": [
+    "dist/thinDOM.min.js"
+  ],
   "dependencies": {
-    "gulp": "*",
-    "gulp-load-plugins": "*",
-    "coffee-script": "*"
+    "lodash": "*"
   },
   "devDependencies": {
+    "gulp": "^3.5.5",
+    "gulp-load-plugins": "*",
+    "coffee-script": "*",
     "gulp-bower-files": "^0.1.11",
     "gulp-concat": "^2.1.7",
     "gulp-declare": "*",
@@ -35,7 +39,6 @@
     "gulp-replace": "*",
     "gulp-uglify": "^0.2.1",
     "gulp-util": "*",
-    "gulp": "^3.5.5",
     "wiredep": "^1.2.2",
     "gulp-less": "^1.2.3",
     "gulp-livereload": "^1.2.0",
