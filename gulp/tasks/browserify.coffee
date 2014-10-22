@@ -43,6 +43,7 @@ runbrowserify = (name) ->
     fullPaths: true
     # Add file extentions to make optional in your requires
     extensions: [ '.coffee' ]
+    bundleExternal: false
     
   #if cfg.paths? then bundleCfg.paths = cfg.paths
 
