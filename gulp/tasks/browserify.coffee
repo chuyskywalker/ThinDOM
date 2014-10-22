@@ -30,7 +30,7 @@ config =
     #paths: ['./']
     filename: 'ThinDOM.js'
     dest: './dist'
-  
+
 
 runbrowserify = (name) ->
   cfg = config[name]
@@ -44,30 +44,31 @@ runbrowserify = (name) ->
     # Add file extentions to make optional in your requires
     extensions: [ '.coffee' ]
     bundleExternal: false
-    
+    debug: true
+
   #if cfg.paths? then bundleCfg.paths = cfg.paths
 
   bundler = bundleMethod(bundleCfg)
   bundler.transform coffeeify
-  
+
   bundle = ->
-    
+
     # Log when bundling starts
     bundleLogger.start()
-    
+
     bundler
       # Enable source maps!
-      .bundle debug: true
+      .bundle()
       # Report compile errors
       .on 'error', handleErrors
       # Use vinyl-source-stream to make the
       # stream gulp compatible. Specify the
       # desired output filename here.
       .pipe source cfg.filename
-      
+      .pipe header.extended()
       # Specify the output destination
       .pipe gulp.dest cfg.dest
-      
+
       # Log when bundling completes!
       .on 'end', bundleLogger.end
 
@@ -77,4 +78,3 @@ runbrowserify = (name) ->
 
 gulp.task 'browserify', ->
   runbrowserify 'main'
-  

@@ -8,8 +8,8 @@ logger = require '../util/bundleLogger'
 notify = require '../util/notify'
 
 
-    
-### 
+
+###
 Compile and Minify Bundle to JS
 ###
 gulp.task 'uglify', ->
@@ -17,8 +17,6 @@ gulp.task 'uglify', ->
 
   #2: compile dist files
   gulp.src './dist/ThinDOM.js'
-    .pipe header.extended()
-    .pipe gulp.dest './dist'
     .pipe rename suffix: '.min'
     .pipe uglify outSourceMap: true
     .pipe header.succinct()
