@@ -2,7 +2,7 @@
   "name": "thindom",
   "title": "A thin DOM wrapper",
   "description": "Inspired by jQuery, this simple library lets you create DOM elements really fast, with significantly more expressiveness than native DOM methods.",
-  "version": "1.0.9",
+  "version": "1.0.10",
   "homepage": "https://github.com/somecallmechief/ThinDOM",
   "author": {
     "name": "Christopher Froehlich",
@@ -28,10 +28,11 @@
     "lodash": ">=2.4.1"
   },
   "devDependencies": {
+    "browserify": ">=4.2.3",
+    "browserify-shim": "^3.8.0",
+    "coffee-script": ">=1.8.0",
     "coffeeify": ">=0.7.0",
     "glob": ">=4.0.4",
-    "browserify": ">=4.2.3",
-    "coffee-script": ">=1.8.0",
     "gulp": ">=3.5.5",
     "gulp-autoprefixer": ">=0.0.6",
     "gulp-bump": ">=0.1.6",
@@ -63,8 +64,17 @@
   },
   "keywords": [],
   "engines": {
-    "node": "0.8.x",
-    "npm": "1.1.x"
+    "node": "0.10.x",
+    "npm": "1.4.x"
   },
-  "scripts": {}
+  "scripts": {},
+  "browserify": {
+    "transform": [
+      "browserify-shim"
+    ]
+  },
+  "browserify-shim": {
+    "jquery": "global:$",
+    "lodash": "global:_"
+  }
 }
