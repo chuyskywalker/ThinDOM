@@ -1,12 +1,12 @@
 {
   "name": "thindom",
-  "version": "1.0.6",
+  "version": "1.0.8",
   "main": [
     "dist/thinDOM.js"
   ],
   "ignore": [],
   "dependencies": {
-    "Faker": "~0.7.0"
+
   },
   "overrides": {
     "faker": {
@@ -17,6 +17,7 @@
   },
   "devDependencies": {
     "qunit": "~1.14.0",
-    "coffee-script": "~1.7.1"
+    "coffee-script": "~1.7.1",
+    "Faker": "~0.7.0"
   }
 }
