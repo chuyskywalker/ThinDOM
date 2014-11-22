@@ -20,11 +20,10 @@ injectTask = (path = '', pageName = '', sourceFiles = [], includeDevDependencies
     .pipe inject(gulp.src(sourceFiles, read: false), # Not necessary to read the files (will speed up things), we're only after their paths
       addRootSlash: false
       addPrefix: '..')
-    #4: Inject all Bower resources into the file  
+    #4: Inject all Bower resources into the file
     .pipe wiredepStream
-      exclude: [/ojs/, /backbone/, /underscore/, /require/, /jquery.js/, /jqueryy-migrate/, /jquery-ui/] #these will break Lo-Dash
       devDependencies: includeDevDependencies
-    #5: write the file to disk  
+    #5: write the file to disk
     .pipe gulp.dest path
     #6: Send Growl notification that task has completed
     .pipe notify.message pageName + '.html includes dynamically injected.'
@@ -33,22 +32,16 @@ injectTask = (path = '', pageName = '', sourceFiles = [], includeDevDependencies
 
 # Inject JS & CSS Files
 gulp.task 'inject', ->
-  
+
   src = [
-    './src/coffee/*.js'
-    './src/coffee/components/component.js'
-    './src/coffee/components/filters/filterComponent.js'
-    './src/coffee/**/*.js'
-    './src/less/**/*.css'
-    './src/css/**/*.css'
   ]
   #Inject into dev.html
-  injectTask './src', 'dev', src.concat ['./src/icons/pictoicons/css/picto.css']
-  
+  injectTask './src', 'dev', src
+
   # Repeat for Unit Tests HTML page
   injectTask './test', 'test', src.concat(['./test/**/*.js*']), true
-  
+
   # Repeat for Release HTML page
   injectTask './dist', 'release', ['./dist/**/*.min.*']
-  
+
   return

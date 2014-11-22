@@ -35,7 +35,7 @@ class ThinDOM
   Convenience method for adding props to objects
   ###
   add: (name, val) ->
-    @[name] = value
+    @[name] = val
     @
 
   _append: (other) ->
