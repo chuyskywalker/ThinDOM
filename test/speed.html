@@ -1,6 +1,7 @@
 <html>
 <head>
-    <script type='text/javascript' src='http://code.jquery.com/jquery-git2.js'></script>
+    <script src="../bower_components/lodash/dist/lodash.compat.js"></script>
+    <script src="../bower_components/jquery/dist/jquery.js"></script>
     <style type="text/css">
         body {
             font-family: "Helvetica";
@@ -65,25 +66,25 @@
     <div id="captions">
 
     </div>
-	
-	<script src="../dist/thinDOM.min.js"></script>
-	
+
+	  <script src="../dist/thinDOM.js"></script>
+
     <!-- bower:js -->
     <script src="../bower_components/Faker/Faker.js"></script>
     <!-- endbower -->
-	
+
     <script type="text/javascript">
-        
+
         function CreateCaptionThinDOM(caption, targetDomElm) {
             var points_plural = (caption.points === 1) ? '' : 's';
-            var captionDOM = ThinDOM('div').attr('class', 'caption')
-                    .append(ThinDOM('div').attr('class', 'votes')
-                    .append(ThinDOM('a', {'class': 'up', 'href': '#'}))
-                    .append(ThinDOM('a', {'class': 'down', 'href': '#'})))
-                    .append(ThinDOM('div').attr('class', 'meta')
-                    .append(ThinDOM('span').text(caption.author + ' - '))
-                    .append(ThinDOM('span').text(caption.points + ' point' + points_plural)))
-                    .append(ThinDOM('p').text(caption.caption)).get();
+            var captionDOM = new ThinDOM('div').attr('class', 'caption')
+                    .append(new ThinDOM('div').attr('class', 'votes')
+                    .append(new ThinDOM('a', {'class': 'up', 'href': '#'}))
+                    .append(new ThinDOM('a', {'class': 'down', 'href': '#'})))
+                    .append(new ThinDOM('div').attr('class', 'meta')
+                    .append(new ThinDOM('span').text(caption.author + ' - '))
+                    .append(new ThinDOM('span').text(caption.points + ' point' + points_plural)))
+                    .append(new ThinDOM('p').text(caption.caption)).get();
             targetDomElm.appendChild(captionDOM);
         }
 
@@ -167,9 +168,9 @@
                 'cachedDom':  CreateCaptionCachedDom
             };
             console.log("Testing DOM over " + trials + " trials with n=" + tests + ". Using jQuery version " + $("#trials").jquery + ". All results in total milliseconds.");
-            
+
             var out = [];
-            
+
             var caplist = GenerateCaptions(tests);
             for(var j = 0; j < trials; j++) {
                 var row = {};

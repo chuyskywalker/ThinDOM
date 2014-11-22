@@ -7,27 +7,6 @@ Capture the global object in order of: global, window, this
 thisGlobal = (if typeof global isnt 'undefined' and global then global else ((if typeof window isnt 'undefined' then window else this)))
 
 ###
-Convert a hyphened-property to camelCaseProperty
-###
-camelCase = (->
-  toUpper = (match, group1) ->
-    if group1 then group1.toUpperCase() else ''
-    
-  defaultRegex = /[-_]+(.)?/g
-  ret = (str, delimiters) ->
-    if delemiters then regex = new RegExp '[' + delimiters + ']+(.)?', 'g' else regex = defaultRegex
-    str.replace regex, toUpper
-  ret
-)()
-
-###
-Convenience method for adding props to objects
-###
-prop = (obj, name, value) ->
-  obj[name] = value
-  obj
-
-###
 Capture the correct remove method for use when dropping nodes
 ###
 removeMethod = (->
@@ -37,196 +16,162 @@ removeMethod = (->
       'remove'
     else if el.removeNode
       'removeNode'
-    else
+    else #kludge for an edge case that probably doesn't exist
       'valueOf'
 )()
 
-_append = (el, other) ->
-  el.appendChild other
-
-###
-Append one node to another
-###
-append = (self, other) ->
-  if other.THINDOM
-    _append self.el, other.get()
-  else if _.isElement other 
-    _append self.el, other
-  else if other instanceof jQuery
-  	if other.length > 1
-  	  _.forEach other, (i, otherEl) ->
-  		  _append self.el, otherEl
-  		  return
-  	else
-  	  _append self.el, other[0]
-  self
-
-_prepend = (el, other) ->
-  el.insertBefore other, el.firstChild
-  el
-  
-###
-Prepend one node to the first child node position of another
-###
-prepend = (self, other) ->
-  if other.THINDOM
-    _prepend self.el, other.get()
-  else if _.isElement other 
-	  _prepend self.el, other  
-  else if other instanceof jQuery
-    if other.length > 1
-      _.forEach other, (i, otherEl) ->
-        _prepend self.el, otherEl
-        return
-    else
-      _prepend self.el, other[0]
-  self  
-  
-###
-Drop a node
-###
-remove = (self) ->
-  self.el[removeMethod]()
-  return
-
-getPropName = (key) ->
-  ret = key
-  if _.contains key, '-'
-    ret = camelCase key
-  ret  
-
-###
-Add styles
-###
-css = (self, properties, value) ->
-  if _.isString properties
-    self.el.style[properties] = value
-  else if _.isPlainObject properties
-    _.forOwn properties, (val, key) ->
-      if val isnt ''
-        self.el.style[key] = val
-      return
-
-###
-Add data props
-per: http://jsperf.com/data-dataset/9
-setAttribute is fastest
-###
-data = (self, properties, value) ->
-  if _.isString properties
-    if false is (properties.indexOf('data-') is 0)
-      properties = 'data-' + properties
-    attr self, properties, value
-  else if _.isPlainObject properties
-    _.forOwn properties, (val, key) ->
-      if false is (key.indexOf('data-') is 0)
-        key = 'data-' + key
-      attr self, key, value
-      return
-
-###
-Set the inner HTML (slow)
-###
-html = (self, html) ->
-  val = undefined
-  unless html?
-    val = self.el.innerHTML
-  else
-    self.el.innerHTML = html
-    val = self
-  val
-
-###
-Add text node (fast)
-###
-text = (self, str) ->
-  val = undefined
-  unless str
-    val = self.el.innerHTML
-  else
-    t = document.createTextNode(str)
-    self.el.appendChild t
-    val = self
-  val
-
-###
-Set props on the node 
-###
-attr = (self, properties, value) ->
-  if _.isString(properties)
-    self.el.setAttribute properties, value
-  else if _.isObject(properties)
-    _.forOwn properties, (val, key) ->
-      if val isnt ''
-        self.el.setAttribute key, val
-      return
-
-  self
-  
 ###
 A little thin DOM wrapper with chaining
 ###
-ThinDOM = (tag, attributes, el = null) ->
-  ret = {} 
-  
-  ret.THINDOM = 'THINDOM'
-  
-  ret.el = el or document.createElement(tag)
-  ret.add = (name, val) ->
-    prop ret, name, val
-  
+class ThinDOM
+
+  constructor: (@tag, attributes, @el = null) ->
+    @el ?= document.createElement @tag
+    if attributes then @attr attributes
+
+  THINDOM: 'THINDOM'
+
   ###
-  Append one element to another
+  Convenience method for adding props to objects
   ###
-  ret.append = (other) ->
-    append ret, other
-  
+  add: (name, val) ->
+    @[name] = value
+    @
+
+  _append: (other) ->
+    @el.appendChild other
+    @el
+
   ###
-  Prepend one element to another
+  Append one node to another
   ###
-  ret.prepend = (other) ->
-    prepend ret, other
-  
+  append: (other) ->
+    ret = @
+    if other.THINDOM
+      @_append other.get()
+    else if _.isElement other
+      @_append other
+    else if other instanceof jQuery
+      if other.length > 1
+        _.forEach other, (i, otherEl) =>
+          @_append otherEl
+          return
+      else
+        @_append other[0]
+    ret
+
+  _prepend: (other) ->
+    @el.insertBefore other, @el.firstChild
+    @el
+
   ###
-  Remove the element
+  Prepend one node to the first child node position of another
   ###
-  ret.remove = ->
-    remove ret
-  
+  prepend: (other) ->
+    ret = @
+    if other.THINDOM
+      @_prepend other.get()
+    else if _.isElement other
+      @_prepend other
+    else if other instanceof jQuery
+      if other.length > 1
+        _.forEach other, (i, otherEl) =>
+          @_prepend otherEl
+          return
+      else
+        @_prepend other[0]
+    ret
+
+  ###
+  Drop a node
+  ###
+  remove: ->
+    @el[removeMethod]()
+    return
+
   ###
   Set the element's style attributes
   ###
-  ret.css = (properties, value) ->
-    css ret, properties, value
+  css: (properties, value) ->
+    ret = @
+    if _.isString properties
+      if value
+        @el.style[properties] = value
+      else
+        ret = @el.style[properties]
+    else if _.isPlainObject properties
+      _.forOwn properties, (val, key) =>
+        if val isnt ''
+          @el.style[key] = val
+        return
+    ret
 
   ###
-  Set the inner HTML of the element.
+  Set the inner HTML (slow)
   ###
-  ret.html = (html_content) ->
-    html ret, html_content
-  
+  html: (html) ->
+    ret = @
+    unless html?
+      ret = @el.innerHTML
+    else
+      @el.innerHTML = html
+    ret
+
   ###
-  Set the inner text of the element as a Text Node
+  Add text node (fast)
   ###
-  ret.text = (str) ->
-    text ret, str
-    
+  text: (str) ->
+    ret = @
+    unless str
+      ret = self.el.innerHTML
+    else
+      t = document.createTextNode str
+      @el.appendChild t
+    ret
+
   ###
-  Set attributes on the element
+  Set props on the node
   ###
-  ret.attr = (properties, value) ->
-    attr ret, properties, value
-  
+  attr: (properties, value) ->
+    ret = @
+    if _.isString(properties)
+      if value
+        @el.setAttribute properties, value
+      else
+        ret = @el.getAttribute properties
+    else if _.isObject(properties)
+      _.forOwn properties, (val, key) =>
+        if val isnt ''
+          @el.setAttribute key, val
+        return
+    ret
+
+  ###
+  Add data props
+  per: http://jsperf.com/data-dataset/9
+  setAttribute is fastest
+  ###
+  data: (properties, value) ->
+    ret = @
+    if _.isString properties
+      if false is (properties.indexOf('data-') is 0)
+        properties = 'data-' + properties
+      ret = @attr properties, value
+    else if _.isPlainObject properties
+      _.forOwn properties, (val, key) =>
+        if false is (key.indexOf('data-') is 0)
+          key = 'data-' + key
+        ret = @attr key, value
+        return
+    ret
+
   ###
   Get the HTML Element
   ###
-  ret.get = ->
-    ret.el
-  
-  if attributes then ret.attr attributes
-  ret
+  get: ->
+    @el
 
-# export ThinDom to the global object  
+# export ThinDom to the global object
 thisGlobal.ThinDOM = ThinDOM
 
 module.exports = ThinDOM
